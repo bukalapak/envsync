@@ -1,0 +1,45 @@
+# define programming language
+language: go
+
+# specify which go version should be tested against project
+go:
+  - "1.10"
+  - "1.9"
+
+before_script:
+  # all .go files, excluding vendor/
+  - GO_FILES=$(find . -iname '*.go' -type f | grep -v /vendor/)
+  # install linter
+  - go get github.com/golang/lint/golint
+  # install static analyzer/linter
+  - go get honnef.co/go/tools/cmd/megacheck
+  # install gocyclo
+  - go get github.com/fzipp/gocyclo
+  # install goimports
+  - go get golang.org/x/tools/cmd/goimports
+  # install dep
+  - go get -u github.com/golang/dep/cmd/dep
+  # install dependencies
+  - make dep
+
+  # download coverage reporter
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+script:
+  # test gofmt
+  - test -z $(gofmt -s -l $GO_FILES) 
+  # run all tests
+  - go test -coverprofile c.out
+  # run go vet
+  - go vet ./...
+  # "go vet on steroids" + linter
+  - megacheck ./...
+  # forbid code with huge functions
+  - gocyclo -over 19 $GO_FILES
+  # linter
+  - golint -set_exit_status $(go list ./...)
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
