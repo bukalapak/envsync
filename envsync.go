@@ -40,8 +40,8 @@ type Syncer struct {
 // FOO is the key and bar is the value.
 //
 // During the synchronization process, there may be an error.
-// Any key-values that have been synchronized before the error occured is kept in target.
-// Any key-values that haven't been synchronized because of an error occured is ignored.
+// Any key-values that have been synchronized before the error occurred is kept in target.
+// Any key-values that haven't been synchronized because of an error occurred is ignored.
 func (s *Syncer) Sync(source, target string) error {
 	// open the source file
 	sFile, err := os.Open(source)
@@ -100,7 +100,7 @@ func (s *Syncer) mapEnv(file *os.File) (map[string]string, error) {
 		if sc.Text() != "" {
 			sp := strings.SplitN(sc.Text(), separator, splitNumber)
 			if len(sp) != splitNumber {
-				return res, errors.New(fmt.Sprintf("couldn't split %s by '=' into two strings", sc.Text()))
+				return res, fmt.Errorf("couldn't split %s by '=' into two strings", sc.Text())
 			}
 
 			res[sp[0]] = sp[1]

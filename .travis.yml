@@ -31,7 +31,7 @@ script:
   # test gofmt
   - test -z $(gofmt -s -l $GO_FILES) 
   # run all tests
-  - go test -coverprofile c.out
+  - go test -race -coverprofile=coverage.out
   # run go vet
   - go vet ./...
   # "go vet on steroids" + linter
@@ -43,3 +43,6 @@ script:
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
