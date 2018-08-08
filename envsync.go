@@ -51,7 +51,7 @@ func (s *Syncer) Sync(source, target string) error {
 	defer sFile.Close()
 
 	// open the target file
-	tFile, err := os.OpenFile(target, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	tFile, err := os.OpenFile(target, os.O_APPEND|os.O_RDWR, os.ModeAppend)
 	if err != nil {
 		return errors.Wrap(err, "couldn't open target file")
 	}
