@@ -19,13 +19,13 @@ Envsync is a tool to synchronize sample env and actual env file.
 
 2. For the next steps, please, change `OS` with "linux" or "darwin" (depend on what you have downloaded before).
 
-3. Give the executable file the permission to execute
+3. Give the executable file the permission to execute.
 
     ```sh
     chmod +x ~/Downloads/envsync_[OS]_amd64
     ```
 
-4. Move to /usr/local/bin
+4. Move to /usr/local/bin.
 
     ```sh
     mv ~/Downloads/envsync_[OS]_amd64 /usr/local/bin/envsync
