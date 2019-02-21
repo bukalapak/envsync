@@ -98,6 +98,10 @@ func (s *Syncer) mapEnv(file *os.File) (map[string]string, error) {
 
 	for sc.Scan() {
 		if sc.Text() != "" {
+			if strings.HasPrefix(sc.Text(), "#") {
+				continue
+			}
+
 			sp := strings.SplitN(sc.Text(), separator, splitNumber)
 			if len(sp) != splitNumber {
 				return res, fmt.Errorf("couldn't split %s by '=' into two strings", sc.Text())
