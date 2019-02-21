@@ -3,8 +3,8 @@ language: go
 
 # specify which go version should be tested against project
 go:
+  - 1.11.x
   - "1.10"
-  - "1.9"
 
 before_script:
   # all .go files, excluding vendor/
@@ -12,7 +12,7 @@ before_script:
   # install linter
   - go get github.com/golang/lint/golint
   # install static analyzer/linter
-  - go get honnef.co/go/tools/cmd/megacheck
+  - go get honnef.co/go/tools/cmd/staticcheck
   # install gocyclo
   - go get github.com/fzipp/gocyclo
   # install goimports
@@ -35,7 +35,7 @@ script:
   # run go vet
   - go vet ./...
   # "go vet on steroids" + linter
-  - megacheck ./...
+  - staticcheck ./...
   # forbid code with huge functions
   - gocyclo -over 19 $GO_FILES
   # linter
