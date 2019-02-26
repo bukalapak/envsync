@@ -5,10 +5,10 @@ See <https://github.com/bukalapak/envsync> for the code.
 ## v1.1.0 (2019-02-26)
 
 **Added**
-- Print list of added keys after syncing
+- Print list of new variables after syncing
 
 **Changed**
-- Keys are sorted alphabetically and grouped by prefix
+- Variables are sorted alphabetically and grouped by prefix
 
 ## v1.0.1 (2019-02-21)
 
