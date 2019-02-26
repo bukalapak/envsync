@@ -1,17 +1,23 @@
 package envsync
 
 import (
-	"bufio"
+	"bytes"
 	"fmt"
+	"io"
 	"os"
+	"os/exec"
+	"sort"
 	"strings"
 
+	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
 )
 
-const (
-	separator   = "="
-	splitNumber = 2
+var (
+	//ExecCommand cmd executor
+	ExecCommand = exec.Command
+	//IOWriteString alias command to write string
+	IOWriteString = io.WriteString
 )
 
 // EnvSyncer describes some contracts to synchronize env.
@@ -43,6 +49,9 @@ type Syncer struct {
 // Any key-values that have been synchronized before the error occurred is kept in target.
 // Any key-values that haven't been synchronized because of an error occurred is ignored.
 func (s *Syncer) Sync(source, target string) error {
+	var err error
+	backupFile := fmt.Sprintf("%s.bak", target)
+
 	// open the source file
 	sFile, err := os.Open(source)
 	if err != nil {
@@ -57,59 +66,72 @@ func (s *Syncer) Sync(source, target string) error {
 	}
 	defer tFile.Close()
 
-	sMap, err := s.mapEnv(sFile)
+	sMap, err := godotenv.Parse(sFile)
 	if err != nil {
 		return err
 	}
 
-	tMap, err := s.mapEnv(tFile)
+	tMap, err := godotenv.Parse(tFile)
 	if err != nil {
 		return err
 	}
+	if err = ExecCommand("cp", "-f", target, backupFile).Run(); err != nil {
+		return err
+	}
+	newEnv, additionalEnv := s.appendNewEnv(sMap, tMap)
+	if len(additionalEnv) > 0 {
+		fmt.Printf("New env added:\n%s\n", s.toString(additionalEnv))
+	}
 
-	addedEnv := s.additionalEnv(sMap, tMap)
-	return s.writeEnv(tFile, addedEnv)
+	//clear current file
+	tFile.Truncate(0)
+	tFile.Seek(0, 0)
+	b := s.toString(newEnv)
+	_, err = IOWriteString(tFile, b)
+	if err != nil {
+		ExecCommand("cp", "-f", backupFile, target).Run()
+	}
+	ExecCommand("rm", "-f", backupFile).Run()
+	return errors.Wrap(err, "couldn't write target file")
 }
 
-func (s *Syncer) additionalEnv(sMap, tMap map[string]string) map[string]string {
+func (s *Syncer) appendNewEnv(sMap, tMap map[string]string) (map[string]string, map[string]string) {
 	addedEnv := make(map[string]string)
 	for k, v := range sMap {
 		if _, found := tMap[k]; !found {
+			tMap[k] = v
 			addedEnv[k] = v
 		}
 	}
-	return addedEnv
+	return tMap, addedEnv
 }
 
-func (s *Syncer) writeEnv(file *os.File, env map[string]string) error {
-	for k, v := range env {
-		if _, err := file.WriteString(fmt.Sprintf("%s=%s\n", k, v)); err != nil {
-			return errors.Wrap(err, fmt.Sprintf("error when writing key: %s, and value: %s", k, v))
-		}
-	}
-	return nil
+func (s *Syncer) prefix(key string) string {
+	return strings.Split(key, "_")[0]
 }
 
-func (s *Syncer) mapEnv(file *os.File) (map[string]string, error) {
-	res := make(map[string]string)
+func (s *Syncer) toString(env map[string]string) string {
+	keys := make([]string, 0, len(env))
+	for k := range env {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys) // sort env before write
+	group, groupComment := "", ""
 
-	sc := bufio.NewScanner(file)
-	sc.Split(bufio.ScanLines)
+	var buff bytes.Buffer
 
-	for sc.Scan() {
-		if sc.Text() != "" {
-			if strings.HasPrefix(sc.Text(), "#") {
-				continue
+	for i, k := range keys {
+		if g := s.prefix(k); g != group {
+			if i == 0 {
+				groupComment = "# %s\n"
+			} else {
+				groupComment = "\n# %s\n"
 			}
-
-			sp := strings.SplitN(sc.Text(), separator, splitNumber)
-			if len(sp) != splitNumber {
-				return res, fmt.Errorf("couldn't split %s by '=' into two strings", sc.Text())
-			}
-
-			res[sp[0]] = sp[1]
+			buff.WriteString(fmt.Sprintf(groupComment, g))
+			group = g
 		}
+		buff.WriteString(fmt.Sprintf("%s=%s\n", k, env[k]))
 	}
 
-	return res, nil
+	return buff.String()
 }
