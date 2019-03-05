@@ -33,7 +33,7 @@ Envsync is a tool to synchronize source env and target env file.
 
 ## Usage
 
-- With flag `-s` and `-t`
+- With flag `-s` and `-t` (*Optional Flags*)
 ```
 envsync -s <source file> -t <target file>
 ```
