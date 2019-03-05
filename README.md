@@ -7,11 +7,11 @@
 
 ## Description
 
-Envsync is a tool to synchronize sample env and actual env file.
+Envsync is a tool to synchronize source env and target env file.
 
 ## Installation
 
-1. Download the executable file in the given link below. Open the given link via your favorite browser. Choose **envsync_linux_amd64** for linux or **envsync_darwin_amd64** for OSX. 
+1. Download the executable file in the given link below. Open the given link via your favorite browser. Choose **envsync_linux_amd64** for linux or **envsync_darwin_amd64** for OSX.
 
     ```sh
     https://github.com/bukalapak/envsync/releases/latest
@@ -33,9 +33,12 @@ Envsync is a tool to synchronize sample env and actual env file.
 
 ## Usage
 
+- With flag `-s` and `-t`
 ```
 envsync -s <source file> -t <target file>
 ```
 
-Source file is the sample env. If the -s flag isn't provided, envsync will use the default value which is **env.sample**.
-Target file is the actual env. If the -t flag isn't provided, envsync will use the default value which is **.env**.
+- Without flag, by default will use file `env.sample` as source and `.env` as a target on current directory.
+```
+envsync
+```

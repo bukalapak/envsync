@@ -15,8 +15,8 @@ func main() {
 
 	app := cli.NewApp()
 	app.Name = "envsync"
-	app.Usage = "synchronize sample env and actual env file"
-	app.UsageText = "envsync -s [sample env] -t [actual env]"
+	app.Usage = "synchronize source env and target env file"
+	app.UsageText = "envsync -s [source env] -t [target env]"
 	app.Version = envsync.VERSION
 	app.Copyright = "Bukalapak™ © 2018"
 	app.Authors = []cli.Author{
@@ -27,13 +27,13 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "source, s",
-			Usage:       "set sample env",
+			Usage:       "set source env",
 			Value:       "env.sample",
 			Destination: &source,
 		},
 		cli.StringFlag{
 			Name:        "target, t",
-			Usage:       "set actual env",
+			Usage:       "set target env",
 			Value:       ".env",
 			Destination: &target,
 		},
