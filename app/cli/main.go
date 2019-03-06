@@ -21,7 +21,7 @@ func main() {
 	app.Copyright = "Bukalapak™ © 2018"
 	app.Authors = []cli.Author{
 		{
-			Name: "PT. Bukalapak.com",
+			Name: "PT Bukalapak.com",
 		},
 	}
 	app.Flags = []cli.Flag{
