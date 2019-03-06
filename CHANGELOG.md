@@ -5,7 +5,7 @@ See <https://github.com/bukalapak/envsync> for the code.
 ## v1.1.1 (2019-03-06)
 
 **Changed**
-- Update documentation and CLI wording. Added in #13.
+- Update documentation and CLI wording. Changed in #13.
 
 ## v1.1.0 (2019-02-26)
 
