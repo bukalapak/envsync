@@ -45,9 +45,11 @@ type Syncer struct {
 // e.g: FOO=bar.
 // FOO is the key and bar is the value.
 //
+// Before the synchronization process, it will create .bak from target file as backup.
 // During the synchronization process, there may be an error.
-// Any key-values that have been synchronized before the error occurred is kept in target.
-// Any key-values that haven't been synchronized because of an error occurred is ignored.
+// If error occurred, target file will be restored from previously created .bak file.
+// If the synchronization succeed, the key-values will be sorted and header will be added based on key's prefix
+// e.g: for FOO_BAR, '#FOO' header will be added before the first key of FOO_
 func (s *Syncer) Sync(source, target string) error {
 	var err error
 	backupFile := fmt.Sprintf("%s.bak", target)
