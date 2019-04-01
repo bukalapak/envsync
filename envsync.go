@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/joho/godotenv"
@@ -131,6 +132,10 @@ func (s *Syncer) toString(env map[string]string) string {
 			}
 			buff.WriteString(fmt.Sprintf(groupComment, g))
 			group = g
+		}
+
+		if strings.Contains(env[k], "\n") {
+			env[k] = strconv.Quote(env[k])
 		}
 		buff.WriteString(fmt.Sprintf("%s=%s\n", k, env[k]))
 	}

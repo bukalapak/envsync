@@ -3,14 +3,14 @@ language: go
 
 # specify which go version should be tested against project
 go:
-  - 1.11.x
-  - "1.10"
+  - 1.12.x
+  - 1.11
 
 before_script:
   # all .go files, excluding vendor/
   - GO_FILES=$(find . -iname '*.go' -type f | grep -v /vendor/)
   # install linter
-  - go get github.com/golang/lint/golint
+  - go get -u golang.org/x/lint/golint
   # install static analyzer/linter
   - go get honnef.co/go/tools/cmd/staticcheck
   # install gocyclo
@@ -29,7 +29,7 @@ before_script:
 
 script:
   # test gofmt
-  - test -z $(gofmt -s -l $GO_FILES) 
+  - test -z $(gofmt -s -l $GO_FILES)
   # run all tests
   - go test -race -coverprofile=coverage.out
   # run go vet
