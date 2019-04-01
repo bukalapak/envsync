@@ -18,7 +18,7 @@ func main() {
 	app.Usage = "synchronize source env and target env file"
 	app.UsageText = "envsync -s [source env] -t [target env]"
 	app.Version = envsync.VERSION
-	app.Copyright = "Bukalapak™ © 2018"
+	app.Copyright = "Bukalapak™ © 2019"
 	app.Authors = []cli.Author{
 		{
 			Name: "PT Bukalapak.com",

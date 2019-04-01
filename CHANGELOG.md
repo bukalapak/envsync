@@ -2,6 +2,11 @@
 
 See <https://github.com/bukalapak/envsync> for the code.
 
+## v1.1.2 (2019-04-01)
+
+**Fixed**
+- Error if value contains newline char (`\n`). Fixed in #16.
+
 ## v1.1.1 (2019-03-06)
 
 **Changed**
